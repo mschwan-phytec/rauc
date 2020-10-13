@@ -167,6 +167,7 @@ static gboolean casync_extract(RaucImage *image, gchar *dest, const gchar *seed,
 	GError *ierror = NULL;
 	gboolean res = FALSE;
 	g_autoptr(GPtrArray) args = g_ptr_array_new_full(5, g_free);
+	g_autoptr(GString) a = NULL;
 
 	g_ptr_array_add(args, g_strdup("casync"));
 	g_ptr_array_add(args, g_strdup("extract"));
@@ -182,6 +183,15 @@ static gboolean casync_extract(RaucImage *image, gchar *dest, const gchar *seed,
 	g_ptr_array_add(args, g_strdup(image->filename));
 	g_ptr_array_add(args, g_strdup(dest));
 	g_ptr_array_add(args, NULL);
+
+	a = g_string_new(NULL);
+	for (gsize i = 0; i < args->len; i++) {
+		g_string_append(a, g_ptr_array_index(args, i));
+		if (i < args->len - 1) {
+			g_string_append(a, " ");
+		}
+	}
+	g_message("%s", a->str);
 
 	launcher = g_subprocess_launcher_new(G_SUBPROCESS_FLAGS_NONE);
 	if (tmpdir)
