@@ -1335,19 +1335,9 @@ static gboolean img_to_boot_emmc_handler(RaucImage *image, RaucSlot *dest_slot, 
 		goto out;
 	}
 
-	/* open */
-	g_message("Opening slot device partition %s", part_slot->device);
-	outstream = open_slot_device(part_slot, &out_fd, &ierror);
-	if (outstream == NULL) {
-		g_propagate_error(error, ierror);
-		res = FALSE;
-		goto out;
-	}
-
-	/* copy */
-	g_message("Copying image to slot device partition %s",
-			part_slot->device);
-	res = copy_raw_image(image, outstream, &ierror);
+	/* open and copy */
+	g_message("Writing image to slot device partition %s", part_slot->device);
+	res = write_image_to_dev(image, part_slot, &ierror);
 	if (!res) {
 		g_propagate_error(error, ierror);
 		goto out;
@@ -1489,6 +1479,9 @@ RaucUpdatePair updatepairs[] = {
 	//{"*.img.caibx", "nand", img_to_nand_handler}, /* unsupported */
 	//{"*.img.caibx", "ubivol", img_to_ubivol_handler}, /* unsupported */
 	//{"*.squashfs.caibx", "ubivol", img_to_ubivol_handler}, /* unsupported */
+#if ENABLE_EMMC_BOOT_SUPPORT == 1
+	{"*.img.caibx", "boot-emmc", img_to_boot_emmc_handler},
+#endif
 	{"*.img.caibx", "*", img_to_raw_handler}, /* fallback */
 	{"*.caidx", "ext4", archive_to_ext4_handler},
 	{"*.caidx", "ubifs", archive_to_ubifs_handler},
