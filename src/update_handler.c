@@ -249,6 +249,8 @@ static gboolean casync_extract_image(RaucImage *image, gchar *dest, GError **err
 	gchar *tmpdir = NULL;
 	gboolean seed_mounted = FALSE;
 
+	g_debug("%s()", __func__);
+
 	/* Prepare Seed */
 	seedslot = get_active_slot_class_member(image->slotclass);
 	if (!seedslot) {
@@ -341,6 +343,8 @@ static gboolean write_image_to_dev(RaucImage *image, RaucSlot *slot, GError **er
 {
 	GError *ierror = NULL;
 	gboolean res = FALSE;
+
+	g_debug("%s()", __func__);
 
 	/* Handle casync index file */
 	if (g_str_has_suffix(image->filename, ".caibx")) {
@@ -618,6 +622,8 @@ out:
 
 static gboolean unpack_archive(RaucImage *image, gchar *dest, GError **error)
 {
+	g_debug("%s()", __func__);
+
 	if (g_str_has_suffix(image->filename, ".caidx" ))
 		return casync_extract_image(image, dest, error);
 	else if (g_str_has_suffix(image->filename, ".catar" ))
@@ -1419,6 +1425,8 @@ static gboolean img_to_raw_handler(RaucImage *image, RaucSlot *dest_slot, const 
 {
 	GError *ierror = NULL;
 	gboolean res = FALSE;
+
+	g_debug("%s()", __func__);
 
 	/* run slot pre install hook if enabled */
 	if (hook_name && image->hooks.pre_install) {
